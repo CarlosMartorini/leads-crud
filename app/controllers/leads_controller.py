@@ -39,10 +39,13 @@ def create_lead():
 
 
 def get_all_leads():
-    leads_list = Lead.query.all()
-
     # TODO: deve ser ordenado pelo numero de visitas (maior para o menor)
+    leads_list = Lead.query.all().order_by(Lead.visits.desc())
+
     # TODO: tratar exceção usando a lista estiver vázia
+    if leads_list == []:
+        return {'msg': 'The list is empty!'}
+
 
     return jsonify(leads_list), 200
 
