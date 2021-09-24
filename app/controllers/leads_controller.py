@@ -52,7 +52,9 @@ def get_all_leads():
 
 def update_lead(email: str):
     # TODO: corpo da requisição obrigatóriamente apenas com o email str
-    data = request.get_json('email')
+    data = request.get_json()
+    if data != data['email']:
+        return {'msg': 'The request can only contain the email'}
 
     # TODO: usar o email para encontrar o registro
     lead_to_update = Lead.query.filter_by(Lead.email == email)
@@ -75,8 +77,20 @@ def update_lead(email: str):
 
 
 def delete_lead(email: str):
-    ...
-    # TODO: usar o email para encontrar o registro
-    # TODO: retorno vázio
     # TODO: corpo da requisição obrigatóriamente apenas com o email str
+    data = request.get_json()
+    if data != data['email']:
+        return {'msg': 'The request can only contain the email'}
+
+    # TODO: usar o email para encontrar o registro
+    lead_to_delete = Lead.query.filter_by(Lead.email == email)
+
     # TODO: tratar exceção de nenhum registro encontrado
+    if not lead_to_delete:
+        return{'msg': f"Could not find {email} in the records!"}, 404
+
+    db.session.delete(lead_to_delete)
+    db.session.commit()
+
+    # TODO: retorno vázio
+    return '', 200
