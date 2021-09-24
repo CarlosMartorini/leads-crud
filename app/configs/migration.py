@@ -3,6 +3,6 @@ from flask_migrate import Migrate
 
 def init_app(app: Flask):
     
-    # TODO: from ... import ...
+    from app.models.leads_model import Lead
 
     Migrate(app, app.db)
