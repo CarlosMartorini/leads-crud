@@ -3,6 +3,7 @@ from app.models.leads_model import Lead
 from datetime import datetime
 from app.configs.database import db
 
+phone_validation = "^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$"
 
 def create_lead():
     data = request.get_json()
@@ -12,7 +13,15 @@ def create_lead():
     data['visits'] = 1
 
     # TODO: tratar exceções do email e phone unicos => verificar o erro de retorno
+    if Lead.query.filter(Lead.email == data['email']):
+        return {'msg': f"The email {data['email']} already exists!"}
+    
+    if Lead.query.filter(Lead.phone == data['phone']):
+        return {'msg': f"The phone {data['phone']} already exists!"}
+    
     # TODO: phone obrigatório no formato (xx)xxxxx-xxxx usar regex
+    if data['phone'] != phone_validation:
+        return {'msg': f"The phone must be like (xx)xxxxx-xxxx and you try pass {data['phone']}"}
 
     new_lead = Lead(**data)
 
@@ -33,16 +42,16 @@ def get_all_leads():
     leads_list = Lead.query.all()
 
     # TODO: deve ser ordenado pelo numero de visitas (maior para o menor)
-    # TODO: tratar exceção uando a lista estiver vázia
+    # TODO: tratar exceção usando a lista estiver vázia
 
     return jsonify(leads_list), 200
 
 
 def update_lead(id: int):
     ...
+    # TODO: usar o email para encontrar o registro
     # TODO: acrescentar em 1 o numero de visitas 'visits'
     # TODO: atualizar a data de 'las_visit' para o momento do request
-    # TODO: usar o email para encontrar o registro
     # TODO: retorno vázio
     # TODO: corpo da requisição obrigatóriamente apenas com o email str
     # TODO: tratar exceção de nenhum registro encontrado
