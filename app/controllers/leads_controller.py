@@ -44,23 +44,37 @@ def get_all_leads():
 
     # TODO: tratar exceção usando a lista estiver vázia
     if leads_list == []:
-        return {'msg': 'The list is empty!'}
+        return {'msg': 'The list is empty!'}, 200
 
 
     return jsonify(leads_list), 200
 
 
-def update_lead(id: int):
-    ...
-    # TODO: usar o email para encontrar o registro
-    # TODO: acrescentar em 1 o numero de visitas 'visits'
-    # TODO: atualizar a data de 'las_visit' para o momento do request
-    # TODO: retorno vázio
+def update_lead(email: str):
     # TODO: corpo da requisição obrigatóriamente apenas com o email str
+    data = request.get_json('email')
+
+    # TODO: usar o email para encontrar o registro
+    lead_to_update = Lead.query.filter_by(Lead.email == email)
+    
     # TODO: tratar exceção de nenhum registro encontrado
+    if not lead_to_update:
+        return{'msg': f"Could not find {email} in the records!"}, 404
+
+    # TODO: atualizar a data de 'las_visit' para o momento do request
+    update_last_visit = lead_to_update['last_visit'] = datetime.now()
+    # TODO: acrescentar em 1 o numero de visitas 'visits'
+    update_visits = lead_to_update['visits'] =+ 1
+
+    lead_to_update.update(update_last_visit, update_visits)
+
+    db.session.commit()
+
+    # TODO: retorno vázio
+    return '', 200
 
 
-def delete_lead(id: int):
+def delete_lead(email: str):
     ...
     # TODO: usar o email para encontrar o registro
     # TODO: retorno vázio
