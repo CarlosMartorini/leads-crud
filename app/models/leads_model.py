@@ -15,10 +15,10 @@ class Lead(db.Model):
 
     __tablename__ = 'leads'
 
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     phone = db.Column(db.String(255), nullable=False, unique=True)
     creation_date = db.Column(db.DateTime(), nullable=False)
     last_visit = db.Column(db.DateTime(), nullable=True)
-    visits = db.Column(db.Integer(), nullable=True)
+    visits = db.Column(db.Integer, nullable=True)
